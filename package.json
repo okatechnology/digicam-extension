@@ -1,0 +1,32 @@
+{
+  "name": "digicam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Oka (https://github.com/okatechnology)",
+  "license": "ISC",
+  "devDependencies": {
+    "@okatechnology/eslint-config": "0.0.12",
+    "@types/chrome": "0.0.115",
+    "@types/terser-webpack-plugin": "^3.0.0",
+    "@types/webpack": "^4.41.17",
+    "eslint": "^7.2.0",
+    "ts-loader": "^7.0.5",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@types/react": "^16.9.38",
+    "@types/react-dom": "^16.9.8",
+    "@types/styled-components": "^5.1.0",
+    "file-loader": "^6.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "styled-components": "^5.1.1"
+  }
+}
