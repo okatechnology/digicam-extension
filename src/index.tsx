@@ -1,14 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import './custom.css';
 import '../public/manifest.json';
 import '../public/background';
-import { BrowserBack } from './components/browserBack/BrowserBack';
+import './additionalScripts/customTextarea';
+import '../assets/digicamExtensionLogo.png';
 
-const buttonRoot = document.createElement('div');
-document.body.appendChild(buttonRoot);
+// const buttonRoot = document.createElement('div');
+// document.body.appendChild(buttonRoot);
 
-const renderBrowserBack = () => {
-  ReactDOM.render(<BrowserBack />, buttonRoot);
-};
+// const renderBrowserBack = () => {
+//   ReactDOM.render(<BrowserBack />, buttonRoot);
+// };
 
-renderBrowserBack();
+// renderBrowserBack();

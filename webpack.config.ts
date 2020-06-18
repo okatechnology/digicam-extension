@@ -19,8 +19,16 @@ export default (): Configuration => ({
         use: [{ loader: 'ts-loader', options: { transpileOnly: true } }],
       },
       {
+        test: /\.png$/i,
+        use: [{ loader: 'file-loader', options: { name: '[name].png' } }],
+      },
+      {
+        test: /custom\.css/i,
+        use: [{ loader: 'file-loader', options: { name: 'custom.css' } }],
+      },
+      {
         test: /manifest\.json/i,
-        use: [{ loader: 'file-loader', options: {name: 'manifest.json'}}],
+        use: [{ loader: 'file-loader', options: { name: 'manifest.json' } }],
         type: 'javascript/auto',
       },
       {
@@ -36,7 +44,7 @@ export default (): Configuration => ({
           },
         ],
         type: 'javascript/auto',
-      }
+      },
     ],
   },
   resolve: {

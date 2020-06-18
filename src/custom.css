@@ -1,0 +1,9 @@
+.customedEditorContent {
+  width: calc(100% - 20px) !important;
+  height: 200px;
+}
+
+.customedCommentContent {
+  width: calc(100% - 20px) !important;
+  height: 100px;
+}

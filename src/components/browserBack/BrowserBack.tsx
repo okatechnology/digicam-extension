@@ -13,8 +13,8 @@ export const BrowserBack = () => {
 const Wrapper = styled.div`
   display: flex;
   position: fixed;
-  left: 170px;
-  top: 10px;
+  left: 180px;
+  top: 5px;
 `;
 
 export const BackButton = styled.a`
