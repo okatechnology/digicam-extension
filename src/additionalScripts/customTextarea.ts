@@ -1,24 +1,35 @@
 import { debounce } from '../utils/debounce';
+import { objectEntriesWithKeyType } from '../utils/objectEntriesWithKeyType';
 
-interface TextAreaData {
-  element: HTMLTextAreaElement | null;
-  previousClassName: 'editorContent' | 'commentContent';
-  currentClassName: string;
+const previousClassNames = ['editorContent', 'commentContent'] as const;
+type PreviousClassName = typeof previousClassNames[number];
+interface TextAreaDataPart {
+  elements: NodeListOf<HTMLTextAreaElement>;
 }
+type TextAreaData = {
+  [K in PreviousClassName]: TextAreaDataPart;
+};
 
 const script = () => {
-  const editorTextarea = document.querySelector<HTMLTextAreaElement>(
+  const editorTextArea = document.querySelectorAll<HTMLTextAreaElement>(
     'textarea.editorContent',
   );
-  const commentTextarea = document.querySelector<HTMLTextAreaElement>(
+  const commentTextArea = document.querySelectorAll<HTMLTextAreaElement>(
     'textarea.commentContent',
   );
-  if (!editorTextarea && !commentTextarea) return;
+  if (editorTextArea.length === 0 && commentTextArea.length === 0) return;
+
+  const textAreaData: TextAreaData = {
+    editorContent: {
+      elements: editorTextArea,
+    },
+    commentContent: {
+      elements: commentTextArea,
+    },
+  };
 
   const lessonNameElement = document.querySelector<HTMLDivElement>('div.cpTgtName');
-  const tableItems = document.querySelectorAll<HTMLElement>(
-    '#funcForm\\:kdiTstAccordion\\:j_idt337>tbody>tr>td',
-  );
+  const tableItems = document.querySelectorAll<HTMLElement>('table>tbody>tr>td');
   const lessonNumber = lessonNameElement?.textContent?.replace(/\D/g, '');
   const assignmentName = (() => {
     let finishLoopFlag = false;
@@ -36,50 +47,49 @@ const script = () => {
   if (!lessonNumber || !assignmentName) return;
   const sharedKey = `${lessonNumber}${assignmentName}`;
 
-  const textAreaDataList: TextAreaData[] = [
-    {
-      element: editorTextarea,
-      previousClassName: 'editorContent',
-      currentClassName: 'customedEditorContent',
-    },
-    {
-      element: commentTextarea,
-      previousClassName: 'commentContent',
-      currentClassName: 'customedCommentContent',
-    },
-  ];
+  objectEntriesWithKeyType(textAreaData).forEach(([previousClassName, { elements }]) => {
+    elements.forEach((element, i) => {
+      element.classList.remove(previousClassName);
+      const currentClassName = `customed${previousClassName.replace(/^[a-z]/, (char) =>
+        char.toUpperCase(),
+      )}`;
+      element.classList.add(currentClassName);
 
-  textAreaDataList.forEach(({ element, previousClassName, currentClassName }) => {
-    if (element === null) return;
-    element.classList.remove(previousClassName);
-    element.classList.add(currentClassName);
+      const ownKey = `${sharedKey}${previousClassName}${i}`;
 
-    const ownKey = `${sharedKey}${previousClassName}`;
-
-    chrome.storage.local.get((textDatas) => {
-      if (!textDatas[ownKey]) return;
-      const prevDataPlace = (() => {
-        switch (previousClassName) {
-          case 'editorContent':
-            return '課題回答欄';
-          case 'commentContent':
-            return 'コメント欄';
+      chrome.storage.local.get((textDatas) => {
+        if (!textDatas[ownKey]) return;
+        const prevDataPlace = (() => {
+          switch (previousClassName) {
+            case 'editorContent':
+              return '課題回答欄';
+            case 'commentContent':
+              return 'コメント欄';
+            default:
+              return 'テキスト入力欄';
+          }
+        })();
+        const textBoxNumber = i > 0 ? i + 1 : '';
+        if (
+          confirm(
+            `${prevDataPlace}${textBoxNumber}に前回のデータがあるようです。復元しますか？`,
+          )
+        ) {
+          element.value = textDatas[ownKey];
         }
-      })();
-      if (confirm(`${prevDataPlace}に前回のデータがあるようです。復元しますか？`)) {
-        element.value = textDatas[ownKey];
-      }
-    });
+      });
 
-    element.addEventListener('input', () => {
-      document.title = '保存中…';
+      element.addEventListener('input', () => {
+        document.title = '保存中…';
+      });
+      const saveText = debounce(() => {
+        chrome.storage.local.set({ [ownKey]: element.value });
+        document.title = '保存完了';
+      }, 1000);
+      element.addEventListener('input', saveText);
     });
-    const saveText = debounce(() => {
-      chrome.storage.local.set({ [ownKey]: element.value });
-      document.title = '保存完了';
-    }, 1000);
-    element.addEventListener('input', saveText);
   });
+  document.title = 'オートセーブ待機中…';
 };
 
 const changeObserver = new MutationObserver(script);
