@@ -84,6 +84,11 @@ const script = () => {
       });
       const saveText = debounce(() => {
         chrome.storage.local.set({ [ownKey]: element.value });
+        // ページから離れる時のPOPUPをOFFにする
+        const scriptElement = document.createElement("script");
+        scriptElement.text = "initData = collectData();"
+        document.documentElement.appendChild(scriptElement);
+
         document.title = '保存完了';
       }, 1000);
       element.addEventListener('input', saveText);
