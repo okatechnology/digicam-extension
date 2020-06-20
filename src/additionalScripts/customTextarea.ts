@@ -1,8 +1,7 @@
 import { debounce } from '../utils/debounce';
 import { objectEntriesWithKeyType } from '../utils/objectEntriesWithKeyType';
 
-const previousClassNames = ['editorContent', 'commentContent'] as const;
-type PreviousClassName = typeof previousClassNames[number];
+type PreviousClassName = 'editorContent' | 'commentContent';
 interface TextAreaDataPart {
   elements: NodeListOf<HTMLTextAreaElement>;
 }
