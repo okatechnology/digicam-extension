@@ -9,7 +9,16 @@ type TextAreaData = {
   [K in PreviousClassName]: TextAreaDataPart;
 };
 
-const script = () => {
+/**
+ *  ページから離れる時のPOPUPをOFFにする
+ */
+const syncInitData = () => {
+  const scriptElement = document.createElement('script');
+  scriptElement.text = 'initData = collectData();';
+  document.documentElement.appendChild(scriptElement);
+};
+
+const main = () => {
   const editorTextArea = document.querySelectorAll<HTMLTextAreaElement>(
     'textarea.editorContent',
   );
@@ -93,16 +102,7 @@ const script = () => {
   document.title = 'オートセーブ待機中…';
 };
 
-/**
- *  ページから離れる時のPOPUPをOFFにする
- */
-const syncInitData = () => {
-  const scriptElement = document.createElement("script");
-  scriptElement.text = "initData = collectData();";
-  document.documentElement.appendChild(scriptElement);
-}
-
-const changeObserver = new MutationObserver(script);
+const changeObserver = new MutationObserver(main);
 changeObserver.observe(document.body, {
   childList: true,
 });
