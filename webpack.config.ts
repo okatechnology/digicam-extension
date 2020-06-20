@@ -23,16 +23,16 @@ export default (): Configuration => ({
         use: [{ loader: 'file-loader', options: { name: '[name].png' } }],
       },
       {
-        test: /custom\.css/i,
+        test: /\/custom\.css/i,
         use: [{ loader: 'file-loader', options: { name: 'custom.css' } }],
       },
       {
-        test: /manifest\.json/i,
+        test: /\/manifest\.json/i,
         use: [{ loader: 'file-loader', options: { name: 'manifest.json' } }],
         type: 'javascript/auto',
       },
       {
-        test: /background\.ts/i,
+        test: /\/background\.ts/i,
         use: [
           {
             loader: 'file-loader',
