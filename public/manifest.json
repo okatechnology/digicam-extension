@@ -1,8 +1,9 @@
 {
-  "name": "Digicam extensions",
-  "version": "1.0",
-  "description": "Digicam extensions built by okatechnology",
+  "name": "デジキャン拡張",
+  "version": "1.1.0",
+  "description": "Digicam extension built by okatechnology",
   "manifest_version": 2,
+  "homepage_url": "https://github.com/okatechnology/digicam-extension",
   "permissions": ["declarativeContent", "storage"],
   "background": {
     "scripts": ["background.js"],
@@ -17,5 +18,6 @@
     "128": "digicamExtensionLogo128.png",
     "48": "digicamExtensionLogo48.png",
     "16": "digicamExtensionLogo16.png"
-  }
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsTWA90CJJkYkSfOwvwdTVWoRJJa1NJEhmzEmXtU5I3I5dmVf/DO+M5M/3qlHrWgKJrSsRSEw32m4RVQVA5EjUxZ9Zy35CFFSIkW04JJ8tRDo46PernBEibS7Bs/hyoFoaFCBWdG1DFx28zFwLrmu0cA43LS7QNy4A8QejUk0WWSl31OmcQwL47Wy5zTrH92u0ndo0FKPDKYWl1/0vnxestwUNfoVZGaA36v2cGTDpZTa/wJhSr14ufeDZE8dyxtkf6w+O/lVRcgVhoIZbsa78/7qr/bzCPZQlDQbk0OCZpan6j3SxDJk1klu9uszyD28nCNrWgmwdyeszROEgVYi/QIDAQAB"
 }
