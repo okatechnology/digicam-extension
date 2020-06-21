@@ -1,5 +1,8 @@
 import { debounce } from '../utils/debounce';
 import { objectEntriesWithKeyType } from '../utils/objectEntriesWithKeyType';
+import { createTable } from './createTableContainer';
+import { createTableRow } from './createTableRow';
+import { syncInitData } from './syncInitData';
 
 type PreviousClassName = 'editorContent' | 'commentContent';
 interface TextAreaDataPart {
@@ -7,15 +10,6 @@ interface TextAreaDataPart {
 }
 type TextAreaData = {
   [K in PreviousClassName]: TextAreaDataPart;
-};
-
-/**
- *  ページから離れる時のPOPUPをOFFにする
- */
-const syncInitData = () => {
-  const scriptElement = document.createElement('script');
-  scriptElement.text = 'initData = collectData();';
-  document.documentElement.appendChild(scriptElement);
 };
 
 const main = () => {
@@ -40,20 +34,22 @@ const main = () => {
   const tableItems = document.querySelectorAll<HTMLElement>('table>tbody>tr>td');
   const lessonNumber = lessonNameElement?.textContent?.replace(/\D/g, '');
   const assignmentName = (() => {
-    let finishLoopFlag = false;
-    for (let i = 0; i < tableItems.length; i++) {
-      if (finishLoopFlag) {
-        return tableItems[i].textContent;
-      }
-      if (tableItems[i].textContent === '課題名') {
-        finishLoopFlag = true;
+    for (const property in tableItems) {
+      const index = parseInt(property);
+      if (isNaN(index)) continue;
+      if (tableItems[index].textContent === '課題名') {
+        return tableItems[index + 1].textContent;
       }
     }
     return null;
   })();
-
   if (!lessonNumber || !assignmentName) return;
   const sharedKey = `${lessonNumber}${assignmentName}`;
+
+  const submitFormWrapper = document.querySelector('#funcForm\\:kdiTstAccordion');
+  if (!submitFormWrapper) return;
+  const submittedDataTable = createTable();
+  submitFormWrapper.appendChild(submittedDataTable.body);
 
   objectEntriesWithKeyType(textAreaData).forEach(([previousClassName, { elements }]) => {
     elements.forEach((element, i) => {
@@ -62,30 +58,25 @@ const main = () => {
         char.toUpperCase(),
       )}`;
       element.classList.add(currentClassName);
-
-      const ownKey = `${sharedKey}${previousClassName}${i}`;
-
-      chrome.storage.local.get((textDatas) => {
-        if (!textDatas[ownKey]) return;
-        const prevDataPlace = (() => {
-          switch (previousClassName) {
-            case 'editorContent':
-              return '課題回答欄';
-            case 'commentContent':
-              return 'コメント欄';
-            default:
-              return 'テキスト入力欄';
-          }
-        })();
-        const textBoxNumber = i > 0 ? i + 1 : '';
-        if (
-          confirm(
-            `${prevDataPlace}${textBoxNumber}に前回のデータがあるようです。復元しますか？`,
-          )
-        ) {
-          element.value = textDatas[ownKey];
-          syncInitData();
+      const submittedDataLabelName = (() => {
+        switch (previousClassName) {
+          case 'editorContent':
+            return '提出済提出内容';
+          case 'commentContent':
+            return '提出済コメント';
+          default:
+            return '';
         }
+      })();
+      const submittedData = element.value;
+      submittedDataTable.trContainer.appendChild(
+        createTableRow(submittedDataLabelName, submittedData),
+      );
+
+      const ownKey = `${sharedKey}${previousClassName}${i}`.replace(/\s/, '_');
+      chrome.storage.local.get((textDatas) => {
+        element.value = textDatas[ownKey];
+        syncInitData();
       });
 
       element.addEventListener('input', () => {
@@ -95,7 +86,7 @@ const main = () => {
         chrome.storage.local.set({ [ownKey]: element.value });
         syncInitData();
         document.title = '保存完了';
-      }, 1000);
+      }, 500);
       element.addEventListener('input', saveText);
     });
   });
