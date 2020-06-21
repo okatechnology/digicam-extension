@@ -1,9 +1,11 @@
 .customedEditorContent {
   width: calc(100% - 20px) !important;
-  height: 200px;
+  min-height: 200px;
+  resize: vertical;
 }
 
 .customedCommentContent {
   width: calc(100% - 20px) !important;
-  height: 100px;
+  min-height: 100px;
+  resize: vertical;
 }
