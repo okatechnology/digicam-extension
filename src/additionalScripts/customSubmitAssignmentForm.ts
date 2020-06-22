@@ -42,7 +42,7 @@ const main = () => {
   const lessonNameElement = document.querySelector<HTMLDivElement>('div.cpTgtName');
   const tableItems = document.querySelectorAll<HTMLElement>('table>tbody>tr>td');
 
-  const lessonName = lessonNameElement?.textContent?.replace(/\d|ui-button/g, '');
+  const lessonName = lessonNameElement?.textContent?.replace('ui-button', '');
   const assignmentName = (() => {
     for (const property in tableItems) {
       const index = parseInt(property);
