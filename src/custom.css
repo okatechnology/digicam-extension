@@ -1,11 +1,23 @@
-.customedEditorContent {
+.extension-customedEditorContent {
   width: calc(100% - 20px) !important;
   min-height: 200px;
   resize: vertical;
 }
 
-.customedCommentContent {
+.extension-customedCommentContent {
   width: calc(100% - 20px) !important;
   min-height: 100px;
   resize: vertical;
+}
+
+.extension-status{
+  color: red;
+  position: sticky;
+  bottom: 10px;
+  right: 10px;
+  width: max-content;
+  margin: 0 0 0 auto;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid red;
 }
