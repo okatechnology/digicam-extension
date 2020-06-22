@@ -19,8 +19,9 @@ export const createTableRow = (headerName: string, contents: string) => {
   textBox.classList.add(...textAreaClassNames);
 
   label.textContent = headerName;
-  textBox.textContent = contents;
+  textBox.innerHTML = contents.replace('\n', '<br />');
   textBox.style.lineHeight = 'normal';
+  textBox.style.padding = '0 20px 0 0';
 
   tr.appendChild(tdLeft);
   tr.appendChild(tdRight);
