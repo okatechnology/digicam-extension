@@ -12,6 +12,9 @@ type TextAreaData = {
   [K in PreviousClassName]: TextAreaDataPart;
 };
 
+const showStatusElement = document.createElement('div');
+showStatusElement.classList.add('extension-status');
+
 const main = () => {
   const editorTextArea = document.querySelectorAll<HTMLTextAreaElement>(
     'textarea.editorContent',
@@ -29,10 +32,17 @@ const main = () => {
       elements: commentTextArea,
     },
   };
+  const mainWrapper = document.querySelector<HTMLElement>('#mainWrapBottom');
+  if (!mainWrapper) return;
+  mainWrapper.appendChild(showStatusElement);
+  showStatusElement.innerHTML =
+    'エラー: オートセーブが無効になってます。<br />ページを読み込み直してください';
+  mainWrapper.style.position = 'relative';
 
   const lessonNameElement = document.querySelector<HTMLDivElement>('div.cpTgtName');
   const tableItems = document.querySelectorAll<HTMLElement>('table>tbody>tr>td');
-  const lessonNumber = lessonNameElement?.textContent?.replace(/\D/g, '');
+
+  const lessonName = lessonNameElement?.textContent?.replace(/\d|ui-button/g, '');
   const assignmentName = (() => {
     for (const property in tableItems) {
       const index = parseInt(property);
@@ -43,19 +53,22 @@ const main = () => {
     }
     return null;
   })();
-  if (!lessonNumber || !assignmentName) return;
-  const sharedKey = `${lessonNumber}${assignmentName}`;
+  if (!lessonName || !assignmentName) return;
+
+  const sharedKey = `${lessonName}_${assignmentName}`;
 
   const submitFormWrapper = document.querySelector('#funcForm\\:kdiTstAccordion');
   if (!submitFormWrapper) return;
   const submittedDataTable = createTable();
   submitFormWrapper.appendChild(submittedDataTable.body);
 
+  let loadError = false;
   objectEntriesWithKeyType(textAreaData).forEach(([previousClassName, { elements }]) => {
     elements.forEach((element, i) => {
       element.classList.remove(previousClassName);
-      const currentClassName = `customed${previousClassName.replace(/^[a-z]/, (char) =>
-        char.toUpperCase(),
+      const currentClassName = `extension-customed${previousClassName.replace(
+        /^[a-z]/,
+        (char) => char.toUpperCase(),
       )}`;
       element.classList.add(currentClassName);
       const submittedDataLabelName = (() => {
@@ -68,29 +81,47 @@ const main = () => {
             return '';
         }
       })();
+
       const submittedData = element.value;
       submittedDataTable.trContainer.appendChild(
         createTableRow(submittedDataLabelName, submittedData),
       );
 
-      const ownKey = `${sharedKey}${previousClassName}${i}`.replace(/\s/, '_');
-      chrome.storage.local.get((textDatas) => {
-        element.value = textDatas[ownKey];
-        syncInitData();
-      });
+      const ownKey = `${sharedKey}_${previousClassName}_${i}`.replace(/\s+/g, '');
+
+      try {
+        chrome.storage.local.get((textDatas) => {
+          if (textDatas[ownKey] === undefined) return;
+          element.value = textDatas[ownKey];
+          syncInitData();
+        });
+      } catch (error) {
+        loadError = true;
+        showStatusElement.style.display = 'block';
+        showStatusElement.textContent =
+          'デジキャン拡張-エラー: ローカル保存済テキスト読み込み失敗 ページを読み込み直してください';
+      }
 
       element.addEventListener('input', () => {
         document.title = '保存中…';
       });
       const saveText = debounce(() => {
-        chrome.storage.local.set({ [ownKey]: element.value });
-        syncInitData();
-        document.title = '保存完了';
+        try {
+          chrome.storage.local.set({ [ownKey]: element.value });
+          syncInitData();
+          document.title = '保存完了';
+        } catch (error) {
+          showStatusElement.style.display = 'block';
+          showStatusElement.textContent =
+            'デジキャン拡張-エラー: 保存失敗 ページを読み込み直してもう一度入力してください';
+        }
       }, 500);
       element.addEventListener('input', saveText);
     });
   });
-  document.title = 'オートセーブ待機中…';
+  document.title = 'オートセーブ: 有効';
+  if (loadError) return;
+  showStatusElement.style.display = 'none';
 };
 
 const changeObserver = new MutationObserver(main);
