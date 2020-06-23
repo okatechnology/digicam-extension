@@ -63,6 +63,8 @@ const main = () => {
   submitFormWrapper.appendChild(submittedDataTable.body);
 
   let loadError = false;
+  const thisPagesKeys: string[] = [];
+
   objectEntriesWithKeyType(textAreaData).forEach(([previousClassName, { elements }]) => {
     elements.forEach((element, i) => {
       element.classList.remove(previousClassName);
@@ -87,7 +89,10 @@ const main = () => {
         createTableRow(submittedDataLabelName, submittedData),
       );
 
-      const ownKey = `${sharedKey}_${previousClassName}_${i}`.replace(/\s+/g, '');
+      const ownKey = `${sharedKey}_${previousClassName}_${i}`
+        .replace(/\s+/g, '')
+        .replace(',', '、');
+      thisPagesKeys.push(ownKey);
 
       try {
         chrome.storage.local.get((textDatas) => {
@@ -120,6 +125,18 @@ const main = () => {
     });
   });
   document.title = 'オートセーブ: 有効';
+
+  chrome.storage.local.get(({ keyOfTextDatas }: { keyOfTextDatas?: string }) => {
+    if (keyOfTextDatas === undefined) {
+      chrome.storage.local.set({ keyOfTextDatas: thisPagesKeys.toString() });
+    } else {
+      const savedKeys = keyOfTextDatas.split(',');
+      savedKeys.push(...thisPagesKeys);
+      chrome.storage.local.set({
+        keyOfTextDatas: [...new Set(thisPagesKeys)].toString(),
+      });
+    }
+  });
   if (loadError) return;
   showStatusElement.style.display = 'none';
 };
