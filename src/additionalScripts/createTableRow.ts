@@ -19,7 +19,7 @@ export const createTableRow = (headerName: string, contents: string) => {
   textBox.classList.add(...textAreaClassNames);
 
   label.textContent = headerName;
-  textBox.innerHTML = contents.replace('\n', '<br />');
+  textBox.innerHTML = contents.replace(/\n/g, '<br />');
   textBox.style.lineHeight = 'normal';
   textBox.style.padding = '0 20px 0 0';
 
