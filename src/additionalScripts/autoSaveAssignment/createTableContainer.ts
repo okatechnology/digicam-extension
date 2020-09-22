@@ -1,4 +1,4 @@
-import { tableClassNames, tableWrapperClassNames } from '../data/tableClassNames';
+import { tableClassNames, tableWrapperClassNames } from '../../data/tableClassNames';
 
 export const createTable = () => {
   const tableWrapper = document.createElement('div');
