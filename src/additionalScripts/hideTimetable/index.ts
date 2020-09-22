@@ -6,6 +6,7 @@ const main = () => {
   const tableDisplayConfigration = configDisplayOfTable();
   tables.forEach((tableElement) => {
     const tableTitle = tableElement.childNodes[0].childNodes[0].textContent;
+    if (!tableTitle) return;
     const tableSemester = ((): keyof TableDisplayConfigration | null => {
       if (tableTitle?.includes('(前期)')) {
         return 'firstSemester';
