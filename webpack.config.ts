@@ -6,7 +6,7 @@ export default (): Configuration => ({
   optimization: {
     minimizer: [new TerserPlugin({})],
   },
-  entry: path.resolve(__dirname, 'src/index.tsx'),
+  entry: path.resolve(__dirname, 'src/index.ts'),
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'script.js',

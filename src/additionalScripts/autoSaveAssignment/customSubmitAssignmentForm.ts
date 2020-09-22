@@ -1,5 +1,5 @@
-import { debounce } from '../utils/debounce';
-import { objectEntriesWithKeyType } from '../utils/objectEntriesWithKeyType';
+import { debounce } from '../../utils/debounce';
+import { objectEntriesWithKeyType } from '../../utils/objectEntriesWithKeyType';
 import { createTable } from './createTableContainer';
 import { createTableRow } from './createTableRow';
 import { syncInitData } from './syncInitData';

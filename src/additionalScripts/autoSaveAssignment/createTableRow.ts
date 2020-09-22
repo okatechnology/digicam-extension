@@ -4,7 +4,7 @@ import {
   tdRightClassNames,
   trClassNames,
   textAreaClassNames,
-} from '../data/tableClassNames';
+} from '../../data/tableClassNames';
 
 export const createTableRow = (headerName: string, contents: string) => {
   const tr = document.createElement('tr');
