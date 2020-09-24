@@ -1,5 +1,4 @@
 import { debounce } from '../../utils/debounce';
-import { objectEntriesWithType } from '../../utils/objectEntriesWithType';
 import { createTable } from './createTableContainer';
 import { createTableRow } from './createTableRow';
 import { syncInitData } from './syncInitData';
@@ -65,7 +64,7 @@ const main = () => {
   let loadError = false;
   const thisPagesKeys: string[] = [];
 
-  objectEntriesWithType(textAreaData).forEach(([previousClassName, { elements }]) => {
+  Object.entries(textAreaData).forEach(([previousClassName, { elements }]) => {
     elements.forEach((element, i) => {
       element.classList.remove(previousClassName);
       const currentClassName = `extension-customed${previousClassName.replace(
