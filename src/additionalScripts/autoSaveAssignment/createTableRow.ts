@@ -25,7 +25,8 @@ export const createTableRow = (headerName: string, contents: string) => {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/'/g, '&#39;')
+    .replace(/`/g, '&#x60;');
   textBox.style.lineHeight = 'normal';
   textBox.style.padding = '0 20px 0 0';
 
