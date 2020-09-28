@@ -1,5 +1,7 @@
 # デジキャン拡張
 
+[ここからインストールできます](https://t.co/NKvoF7bjMY?amp=1)
+
 ## 内容
 
 [デジキャン](https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml)をもっと使いやすくするための拡張機能です！
